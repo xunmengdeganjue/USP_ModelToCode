@@ -63,6 +63,19 @@ enum{
     MULTY_INST_MAX,
 };
 
+/*
+**if a string end with a dot delete the dot.
+*/
+void removeDotIfEndsWithDot(char *str) {
+    size_t len = strlen(str);
+
+    /*If the string is not empty and the last character is '.'*/
+    if (len > 0 && str[len - 1] == '.') {
+        /*delete the last dot.*/
+        str[len - 1] = '\0';
+    }
+}
+
 int countOccurrences(const char *str, const char *sub) {
     int count = 0;
     const char *temp = str;
@@ -420,7 +433,7 @@ int h_tail_prepare(FILE *fp, char *module_name){
 }
 
 /*
-**Scan the data-model file to create the C code to ty_xxx.c and ty_xxx.h.
+**Scan the data-model file to create the C code to xxx.c and xxx.h.
 **
 */
 int model_content_translate( FILE *fp_in, FILE *fp_out, Content_Type ctype, char *module_name){
@@ -508,11 +521,8 @@ int model_content_translate( FILE *fp_in, FILE *fp_out, Content_Type ctype, char
                     p = strstr(parameter[M_PATH], "NumberOfEntries");
                     strncpy(dest_node, parameter[M_PATH], p -parameter[M_PATH]);
 
-                    /*Delete the last dot of the object[M_PATH].*/
-                    p = strrchr(object[M_PATH], '.');
-                    if(p != NULL){
-                        *p= '\0';
-                    }
+                    /*Delete the last dot of the object[M_PATH],if the object[M_PATH] end with a dot.*/
+                    removeDotIfEndsWithDot(object[M_PATH]);
 
                     //sscanf(parameter[M_PATH], "%sNumberOfEntries", dest_node);
                     printf("[%s][%d]Dest Node=[%s],Object_path[%s]\n", __FUNCTION__, __LINE__,dest_node, object[M_PATH]);
